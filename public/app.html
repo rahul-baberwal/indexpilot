@@ -785,8 +785,8 @@ function loadUrlsState() {
 function getActiveProfileId() {
   const active = getActive();
   if (active.profileId) return active.profileId;
-  const site = getActiveSite();
-  if (site) return site.profileId;
+  const sites = getSites();
+  if (sites.length) return sites[0].profileId;
   const profiles = getProfiles();
   if (profiles.length) return profiles[0].id;
   return null;
