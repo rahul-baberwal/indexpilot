@@ -1,0 +1,8 @@
+{
+  "name": "indexpilot",
+  "version": "2.0.0",
+  "description": "One-click Google + Bing indexing tool with profiles",
+  "main": "server.js",
+  "scripts": { "start": "node server.js" },
+  "dependencies": { "express": "^4.18.2", "node-fetch": "^2.7.0" }
+}

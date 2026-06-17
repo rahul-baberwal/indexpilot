@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>IndexPilot — Instant Google &amp; Bing Indexing Tool</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@500;600;700;800&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root {
+  --ink:    #0a0a0f;
+  --ink2:   #12121a;
+  --ink3:   #1a1a26;
+  --surface:#13131c;
+  --panel:  #181824;
+  --card:   #1f1f2e;
+  --card2:  #252538;
+  --line:   rgba(255,255,255,0.06);
+  --line2:  rgba(255,255,255,0.12);
+  --text:   #f0eff8;
+  --text2:  #a09eb8;
+  --text3:  #6a6880;
+  --accent: #7c6af7;
+  --accent2:#a594fb;
+  --gold:   #f5c842;
+  --gold2:  #ffd96a;
+  --green:  #3fcf72;
+  --green2: #64e896;
+  --blue:   #38bdf8;
+  --r:      8px;
+  --rl:     16px;
+  --rxl:    24px;
+  --font:   'DM Sans', sans-serif;
+  --mono:   'DM Mono', monospace;
+  --head:   'Syne', sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+body {
+  font-family: var(--font);
+  background: var(--ink);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+  line-height: 1.6;
+}
+
+/* ── Grain overlay ── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 999;
+  opacity: .4;
+}
+
+/* Background glows */
+.glow-1 {
+  position: absolute;
+  top: -150px;
+  left: 20%;
+  width: 450px;
+  height: 450px;
+  background: radial-gradient(circle, rgba(124, 106, 247, 0.15) 0%, transparent 70%);
+  z-index: -1;
+  pointer-events: none;
+}
+.glow-2 {
+  position: absolute;
+  top: 600px;
+  right: 10%;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(245, 200, 66, 0.08) 0%, transparent 70%);
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* Header / Navigation */
+header {
+  height: 76px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 40px;
+  border-bottom: 1px solid var(--line);
+  background: rgba(10, 10, 15, 0.85);
+  backdrop-filter: blur(12px);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  color: var(--text);
+}
+.logo-icon {
+  width: 36px;
+  height: 36px;
+  background: linear-gradient(135deg, var(--accent), var(--gold));
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--head);
+  font-size: 18px;
+  font-weight: 800;
+  color: #fff;
+}
+.logo-text {
+  font-family: var(--head);
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.4px;
+}
+nav {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+nav a {
+  color: var(--text2);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  transition: color 0.15s;
+}
+nav a:hover {
+  color: var(--text);
+}
+
+/* Hero Section */
+.hero {
+  padding: 100px 40px 60px;
+  text-align: center;
+  max-width: 900px;
+  margin: 0 auto;
+  position: relative;
+}
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(124, 106, 247, 0.15);
+  border: 1px solid rgba(124, 106, 247, 0.3);
+  padding: 6px 14px;
+  border-radius: 99px;
+  color: var(--accent2);
+  font-size: 12px;
+  font-weight: 600;
+  font-family: var(--mono);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 24px;
+}
+.hero h1 {
+  font-family: var(--head);
+  font-size: 54px;
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -1.5px;
+  margin-bottom: 20px;
+}
+.hero h1 span {
+  background: linear-gradient(135deg, var(--accent2), var(--gold));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.hero p {
+  font-size: 17px;
+  color: var(--text2);
+  max-width: 650px;
+  margin: 0 auto 36px;
+  line-height: 1.6;
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: var(--r);
+  font-size: 14px;
+  font-weight: 600;
+  padding: 12px 28px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s;
+  border: 1px solid var(--line2);
+  font-family: var(--font);
+}
+.btn.primary {
+  background: linear-gradient(135deg, var(--accent), #6057d8);
+  border-color: transparent;
+  color: #fff;
+  box-shadow: 0 4px 24px rgba(124, 106, 247, 0.3);
+}
+.btn.primary:hover {
+  box-shadow: 0 6px 32px rgba(124, 106, 247, 0.45);
+  transform: translateY(-1px);
+}
+.btn.secondary {
+  background: var(--ink2);
+  color: var(--text);
+}
+.btn.secondary:hover {
+  background: var(--ink3);
+  border-color: rgba(255,255,255,0.2);
+}
+.btn-group {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+}
+
+/* Privacy Alert Callout */
+.privacy-hero-banner {
+  max-width: 780px;
+  margin: 40px auto 0;
+  background: rgba(63, 207, 114, 0.05);
+  border: 1px solid rgba(63, 207, 114, 0.15);
+  border-radius: var(--rl);
+  padding: 20px 24px;
+  text-align: left;
+  display: flex;
+  gap: 18px;
+  align-items: flex-start;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+.privacy-icon {
+  width: 40px;
+  height: 40px;
+  background: rgba(63, 207, 114, 0.15);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--green2);
+  flex-shrink: 0;
+}
+.privacy-icon svg {
+  width: 20px;
+  height: 20px;
+}
+.privacy-text h3 {
+  font-family: var(--head);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--green2);
+  margin-bottom: 4px;
+}
+.privacy-text p {
+  font-size: 13px;
+  color: var(--text2);
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* Features Grid */
+.features-section {
+  padding: 80px 40px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+.section-header {
+  text-align: center;
+  margin-bottom: 60px;
+}
+.section-header h2 {
+  font-family: var(--head);
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+.section-header p {
+  color: var(--text2);
+  font-size: 15px;
+}
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 20px;
+}
+.feature-card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--rl);
+  padding: 28px;
+  transition: all 0.2s;
+}
+.feature-card:hover {
+  border-color: var(--line2);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+}
+.feature-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--r);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+.feature-icon.purple { background: rgba(124, 106, 247, 0.12); color: var(--accent2); }
+.feature-icon.gold { background: rgba(245, 200, 66, 0.1); color: var(--gold); }
+.feature-icon.blue { background: rgba(56, 189, 248, 0.1); color: var(--blue); }
+.feature-icon.green { background: rgba(63, 207, 114, 0.1); color: var(--green2); }
+.feature-icon svg {
+  width: 20px;
+  height: 20px;
+}
+.feature-card h3 {
+  font-family: var(--head);
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+.feature-card p {
+  color: var(--text2);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* Privacy Details Section */
+.privacy-section {
+  padding: 80px 40px;
+  background: rgba(255, 255, 255, 0.01);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+.privacy-container {
+  max-width: 900px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 60px;
+  align-items: center;
+}
+.privacy-left h2 {
+  font-family: var(--head);
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 18px;
+}
+.privacy-left p {
+  color: var(--text2);
+  font-size: 15px;
+  margin-bottom: 20px;
+}
+.privacy-left ul {
+  list-style: none;
+}
+.privacy-left li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+  font-size: 14.5px;
+  color: var(--text);
+}
+.privacy-left li svg {
+  color: var(--green2);
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+/* Privacy Flowchart Component */
+.flow-diagram {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--rl);
+  padding: 24px;
+  font-family: var(--mono);
+  font-size: 11px;
+}
+.flow-box {
+  border: 1px solid var(--line2);
+  background: var(--ink2);
+  border-radius: var(--r);
+  padding: 12px;
+  text-align: center;
+  margin-bottom: 18px;
+  position: relative;
+}
+.flow-box.accent-box {
+  border-color: rgba(124, 106, 247, 0.4);
+  background: rgba(124, 106, 247, 0.05);
+  color: var(--accent2);
+}
+.flow-box.green-box {
+  border-color: rgba(63, 207, 114, 0.4);
+  background: rgba(63, 207, 114, 0.05);
+  color: var(--green2);
+}
+.flow-arrow {
+  text-align: center;
+  color: var(--text3);
+  margin-top: -12px;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+.flow-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.flow-row-arrow {
+  display: flex;
+  justify-content: space-around;
+  margin-top: -12px;
+  margin-bottom: 8px;
+  color: var(--text3);
+}
+
+/* Footer */
+footer {
+  padding: 60px 40px;
+  border-top: 1px solid var(--line);
+  text-align: center;
+}
+.footer-text {
+  color: var(--text3);
+  font-size: 13px;
+  margin-top: 20px;
+  font-family: var(--mono);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .hero h1 { font-size: 38px; }
+  .privacy-container { grid-template-columns: 1fr; gap: 40px; }
+  .hero { padding: 60px 20px 40px; }
+  header { padding: 0 20px; }
+}
+</style>
+</head>
+<body>
+
+<div class="glow-1"></div>
+<div class="glow-2"></div>
+
+<!-- Navigation Header -->
+<header>
+  <a href="#" class="logo">
+    <div class="logo-icon">IP</div>
+    <div>
+      <div class="logo-text">IndexPilot</div>
+    </div>
+  </a>
+  <nav>
+    <a href="#features">Features</a>
+    <a href="#privacy">Security</a>
+    <a href="app.html" class="btn secondary" style="padding: 6px 14px; font-size: 12px;">Launch App</a>
+  </nav>
+</header>
+
+<!-- Hero Section -->
+<section class="hero">
+  <div class="hero-badge">🚀 v2.0 Local-First Indexer</div>
+  <h1>Get Your Pages Indexed On Google &amp; Bing <span>Instantly</span></h1>
+  <p>Submit bulk URLs to search engines via the Google Indexing API and Bing IndexNow. Speed up your search traffic completely free, right from your browser.</p>
+  
+  <div class="btn-group">
+    <a href="app.html" class="btn primary">
+      Launch Indexer App
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+    </a>
+    <a href="https://github.com/rahul-baberwal/indexpilot" target="_blank" class="btn secondary">
+      View GitHub
+    </a>
+  </div>
+
+  <!-- Privacy Banner Callout -->
+  <div class="privacy-hero-banner">
+    <div class="privacy-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+    </div>
+    <div class="privacy-text">
+      <h3>100% Client-Side Privacy Guaranteed</h3>
+      <p>Your API Keys, settings, domains, and submission history are stored <strong>strictly locally in your browser's LocalStorage</strong>. IndexPilot has no backend database, meaning your credentials never leave your machine.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Features section -->
+<section class="features-section" id="features">
+  <div class="section-header">
+    <h2>Built For Fast Search Indexing</h2>
+    <p>Everything you need to bypass standard Search Console crawling delays.</p>
+  </div>
+  
+  <div class="features-grid">
+    <!-- Google API -->
+    <div class="feature-card">
+      <div class="feature-icon purple">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+      </div>
+      <h3>Google Indexing API</h3>
+      <p>Submit up to 200 URLs daily directly to Google's indexing system. Perfect for job postings, live streams, blogs, and time-sensitive updates.</p>
+    </div>
+
+    <!-- Bing IndexNow -->
+    <div class="feature-card">
+      <div class="feature-icon blue">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+      </div>
+      <h3>Bing IndexNow Integration</h3>
+      <p>Instantly alert Microsoft Bing, Yandex, and other supporting search engines about new, deleted, or modified content via the IndexNow API.</p>
+    </div>
+
+    <!-- Multi Profile -->
+    <div class="feature-card">
+      <div class="feature-icon gold">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      </div>
+      <h3>Multi-Profile Support</h3>
+      <p>Organize your domains, credentials, and indexing tasks by project, brand, or client. Switch between active environments directly in the sidebar.</p>
+    </div>
+
+    <!-- Sitemap Fetcher -->
+    <div class="feature-card">
+      <div class="feature-icon green">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h6v6H3zM15 3h6v6h-6zM9 15h6v6H9zM6 9v3a3 3 0 0 0 3 3h6a3 3 0 0 0 3-3V9"/><path d="M12 12v3"/></svg>
+      </div>
+      <h3>Sitemap Auto-Parser</h3>
+      <p>Enter any sitemap URL, fetch it through our CORS-free backend proxy, and extract all URLs instantly to prepare them for bulk indexing submissions.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Detailed Privacy section -->
+<section class="privacy-section" id="privacy">
+  <div class="privacy-container">
+    <div class="privacy-left">
+      <h2>Your Credentials Stay Yours. Period.</h2>
+      <p>IndexPilot was built under a local-first philosophy. We believe that developers shouldn't have to upload sensitive cloud service account keys to third-party databases just to request simple URL crawls.</p>
+      <ul>
+        <li>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17l-5-5"/></svg>
+          <strong>No Database:</strong> We run 0 remote databases.
+        </li>
+        <li>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17l-5-5"/></svg>
+          <strong>Browser LocalStorage:</strong> All settings are saved locally.
+        </li>
+        <li>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17l-5-5"/></svg>
+          <strong>Open &amp; Auditable:</strong> Run locally, deploy to Netlify, or inspect the source.
+        </li>
+      </ul>
+    </div>
+    
+    <div class="privacy-right">
+      <!-- Flow Diagram -->
+      <div class="flow-diagram">
+        <div class="flow-box accent-box">
+          YOUR BROWSER<br/>(LocalStorage)
+        </div>
+        <div class="flow-arrow">↓ Requests signed directly in-browser</div>
+        <div class="flow-box">
+          GOOGLE / BING API<br/>(Official API Endpoints)
+        </div>
+        <div class="flow-arrow" style="margin-top:-6px">↓ Response returned directly</div>
+        <div class="flow-box green-box" style="margin-bottom:0">
+          INDEXING COMPLETED ✓
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <a href="#" class="logo" style="justify-content: center; margin-bottom: 24px;">
+    <div class="logo-icon">IP</div>
+    <div class="logo-text">IndexPilot</div>
+  </a>
+  <p style="color: var(--text2); font-size: 14px;">Deployable statically to Netlify, Vercel, or custom servers.</p>
+  <div class="footer-text">
+    &copy; 2026 IndexPilot. indexpilot.rahulbaberwal.com. Open Source.
+  </div>
+</footer>
+
+</body>
+</html>
