@@ -1,3 +1,13 @@
 [build]
   publish = "public"
   command = ""
+
+[[redirects]]
+  from = "/proxy/sitemap"
+  to = "/.netlify/functions/sitemap"
+  status = 200
+
+[[redirects]]
+  from = "/proxy/indexnow"
+  to = "/.netlify/functions/indexnow"
+  status = 200
