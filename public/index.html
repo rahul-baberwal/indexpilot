@@ -4,6 +4,85 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>IndexPilot — Instant Google &amp; Bing Indexing Tool</title>
+<link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
+<link rel="shortcut icon" href="/favicon.ico" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+<meta name="apple-mobile-web-app-title" content="IndexPilot" />
+<link rel="manifest" href="/site.webmanifest" />
+<meta name="description" content="Submit bulk URLs directly to Google Indexing API and Bing IndexNow. 100% private, client-side, local-first search indexing tool."/>
+<meta property="og:title" content="IndexPilot — Instant Google &amp; Bing Indexing Tool"/>
+<meta property="og:description" content="Submit bulk URLs directly to Google Indexing API and Bing IndexNow. 100% private, client-side, local-first search indexing tool."/>
+<meta property="og:type" content="website"/>
+<meta property="og:url" content="https://indexpilot.rahulbaberwal.com/"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="IndexPilot — Instant Google &amp; Bing Indexing Tool"/>
+<meta name="twitter:description" content="Submit bulk URLs directly to Google Indexing API and Bing IndexNow. 100% private, client-side, local-first search indexing tool."/>
+
+<!-- Structured Data (JSON-LD) -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "IndexPilot",
+  "url": "https://indexpilot.rahulbaberwal.com/",
+  "applicationCategory": "SEOApplication",
+  "operatingSystem": "All",
+  "browserRequirements": "Requires JavaScript. Requires HTML5.",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "description": "IndexPilot is a local-first, client-side indexing tool designed to submit bulk URLs directly to Google Indexing API and Bing IndexNow API without a remote database, ensuring 100% key privacy.",
+  "creator": {
+    "@type": "Person",
+    "@id": "https://rahulbaberwal.com/#person",
+    "name": "Rahul Baberwal",
+    "url": "https://rahulbaberwal.com"
+  }
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Is IndexPilot safe and private?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes, IndexPilot is 100% private. All API keys, credentials, and settings are saved strictly in your browser's local storage and never sent to a remote database."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How many URLs can I submit daily?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Google Indexing API generally allows up to 200 URL submissions per day per project. Bing IndexNow allows up to 10,000 URLs per day."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does IndexPilot cost anything?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No, IndexPilot is entirely free and open-source. You can run it locally, deploy it to your own hosting provider, or use our hosted version."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is the difference between Google Indexing API and IndexNow?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Google Indexing API is a Google-specific API that crawls/indexes pages immediately. IndexNow is an open protocol used by Bing, Yandex, and Seznam to instantly index updated website content."
+      }
+    }
+  ]
+}
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@500;600;700;800&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet"/>
 <style>
@@ -424,6 +503,49 @@ nav a:hover {
   color: var(--text3);
 }
 
+/* FAQ Section */
+.faq-section {
+  padding: 80px 40px;
+  max-width: 850px;
+  margin: 0 auto;
+  border-top: 1px solid var(--line);
+}
+.faq-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+.faq-item {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--rl);
+  padding: 24px;
+  transition: all 0.2s;
+}
+.faq-item:hover {
+  border-color: var(--line2);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+}
+.faq-item h3 {
+  font-family: var(--head);
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: var(--text);
+}
+.faq-item p {
+  font-size: 13.5px;
+  color: var(--text2);
+  line-height: 1.6;
+}
+
+@media (max-width: 768px) {
+  .faq-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* Footer */
 footer {
   padding: 60px 40px;
@@ -443,6 +565,7 @@ footer {
   .privacy-container { grid-template-columns: 1fr; gap: 40px; }
   .hero { padding: 60px 20px 40px; }
   header { padding: 0 20px; }
+  nav a:not(.btn) { display: none; }
 }
 </style>
 </head>
@@ -454,7 +577,7 @@ footer {
 <!-- Navigation Header -->
 <header>
   <a href="#" class="logo">
-    <div class="logo-icon">IP</div>
+    <img src="/logo.png" alt="IP" class="logo-icon" style="object-fit: cover; border: none;" />
     <div>
       <div class="logo-text">IndexPilot</div>
     </div>
@@ -581,10 +704,36 @@ footer {
   </div>
 </section>
 
+<!-- FAQ Section -->
+<section class="faq-section" id="faq">
+  <div class="section-header">
+    <h2>Frequently Asked Questions</h2>
+    <p>Everything you need to know about IndexPilot and search indexing.</p>
+  </div>
+  <div class="faq-grid">
+    <div class="faq-item">
+      <h3>Is IndexPilot safe and private?</h3>
+      <p>Yes, IndexPilot is 100% private. All API keys, credentials, and settings are saved strictly in your browser's local storage and never sent to a remote database.</p>
+    </div>
+    <div class="faq-item">
+      <h3>How many URLs can I submit daily?</h3>
+      <p>Google Indexing API generally allows up to 200 URL submissions per day per project. Bing IndexNow allows up to 10,000 URLs per day.</p>
+    </div>
+    <div class="faq-item">
+      <h3>Does IndexPilot cost anything?</h3>
+      <p>No, IndexPilot is entirely free and open-source. You can run it locally, deploy it to your own hosting provider, or use our hosted version.</p>
+    </div>
+    <div class="faq-item">
+      <h3>What is the difference between Google Indexing API and IndexNow?</h3>
+      <p>Google Indexing API is a Google-specific API that crawls/indexes pages immediately. IndexNow is an open protocol used by Bing, Yandex, and Seznam to instantly index updated website content.</p>
+    </div>
+  </div>
+</section>
+
 <!-- Footer -->
 <footer>
   <a href="#" class="logo" style="justify-content: center; margin-bottom: 24px;">
-    <div class="logo-icon">IP</div>
+    <img src="/logo.png" alt="IP" class="logo-icon" style="object-fit: cover; border: none;" />
     <div class="logo-text">IndexPilot</div>
   </a>
   <p style="color: var(--text2); font-size: 14px;">Deployable statically to Netlify, Vercel, or custom servers.</p>
